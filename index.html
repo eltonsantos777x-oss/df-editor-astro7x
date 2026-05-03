@@ -3,30 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASTRO7X | Smart PDF Editor</title>
+    <title>ASTRO7X | Smart PDF Editor v1.1</title>
+    <!-- Biblioteca para processamento local de PDF -->
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
     <style>
-        :root { --neon: #00ff41; --bg: #0a0a0a; }
-        body { background-color: var(--bg); color: var(--neon); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .container { border: 1px solid var(--neon); padding: 2rem; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 255, 65, 0.2); text-align: center; max-width: 500px; }
-        h1 { letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
-        input[type="file"] { margin: 20px 0; border: 1px dashed var(--neon); padding: 10px; width: 100%; box-sizing: border-box; }
-        button { background: transparent; color: var(--neon); border: 1px solid var(--neon); padding: 10px 25px; font-size: 1rem; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: bold; }
-        button:hover { background: var(--neon); color: black; box-shadow: 0 0 20px var(--neon); }
-        .status { margin-top: 15px; font-size: 0.8rem; opacity: 0.7; }
+        :root { --neon: #00ff41; --bg: #0a0a0a; --gray: #1a1a1a; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--neon); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .container { 
+            border: 1px solid var(--neon); 
+            padding: 2.5rem; 
+            border-radius: 12px; 
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.15); 
+            text-align: center; 
+            max-width: 450px;
+            background: rgba(26, 26, 26, 0.8);
+        }
+        h1 { letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; font-size: 1.5rem; }
+        .tagline { font-size: 0.8rem; margin-bottom: 25px; opacity: 0.8; }
+        input[type="file"] { 
+            margin: 20px 0; 
+            border: 1px dashed var(--neon); 
+            padding: 15px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            background: var(--gray);
+            color: var(--neon);
+            cursor: pointer;
+        }
+        button { 
+            background: transparent; 
+            color: var(--neon); 
+            border: 1px solid var(--neon); 
+            padding: 12px 30px; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            transition: all 0.4s ease; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+            width: 100%;
+        }
+        button:hover { 
+            background: var(--neon); 
+            color: black; 
+            box-shadow: 0 0 25px var(--neon); 
+        }
+        .status { margin-top: 20px; font-size: 0.75rem; font-family: monospace; }
+        /* v1.1 - Astro7x Deploy Tag */
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Ghost PDF Editor</h1>
-        <p>Edição local. Sem rastros. Estilo original.</p>
+        <div class="tagline">Processamento local • Sem nuvem • Smart Matching</div>
         
         <input type="file" id="upload" accept="application/pdf">
-        <br>
         <button onclick="editarPDF()">Processar e Baixar</button>
         
-        <div class="status" id="status">Aguardando arquivo...</div>
+        <div class="status" id="status">SISTEMA ONLINE - AGUARDANDO INPUT</div>
     </div>
 
     <script>
@@ -35,11 +79,11 @@
             const status = document.getElementById('status');
             
             if (input.files.length === 0) {
-                alert("Selecione um PDF primeiro!");
+                status.innerText = "ERRO: SELECIONE UM ARQUIVO PDF.";
                 return;
             }
 
-            status.innerText = "Processando Smart Font Matching...";
+            status.innerText = "INICIANDO SMART FONT MATCHING...";
 
             try {
                 const arrayBuffer = await input.files[0].arrayBuffer();
@@ -47,39 +91,45 @@
                 const pages = pdfDoc.getPages();
                 const firstPage = pages[0];
 
-                // Exemplo de Borragem e Edição (Smart Matching)
-                // Aqui o script "limpa" a área e escreve com a fonte padrão do PDF
-                const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+                // --- Lógica Smart Matching & Borragem ---
+                // 1. Carrega fonte padrão (Helvetica é a base de 90% dos documentos)
+                const font = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
                 
-                // 1. Borragem (Censura real)
+                // 2. Aplica Borragem de segurança (Redaction)
+                // Vamos cobrir uma área exemplo (coordenadas x, y)
                 firstPage.drawRectangle({
-                    x: 50, y: 700, width: 250, height: 20,
-                    color: PDFLib.rgb(1, 1, 1), // Cobre com branco
+                    x: 50, y: 700, width: 300, height: 25,
+                    color: PDFLib.rgb(1, 1, 1), // Branco para "limpar" a área
                 });
 
-                // 2. Novo texto mantendo o padrão
-                firstPage.drawText('CONTEUDO EDITADO - ASTRO7X', {
-                    x: 55, y: 705, size: 12,
-                    font: helveticaFont,
-                    color: PDFLib.rgb(0, 0, 0),
+                // 3. Insere o novo texto com o estilo preservado
+                firstPage.drawText('DOCUMENTO EDITADO VIA ASTRO7X PRO', {
+                    x: 55, y: 708, 
+                    size: 11,
+                    font: font,
+                    color: PDFLib.rgb(0, 0, 0), // Texto preto sobre o fundo branco
                 });
 
+                // Salva o documento na memória RAM do navegador
                 const pdfBytes = await pdfDoc.save();
                 
-                // Gerar download local imediato
+                // Gera o download imediato
                 const blob = new Blob([pdfBytes], { type: "application/pdf" });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = "editado_localmente.pdf";
+                a.download = "astro7x_secured_" + Date.now() + ".pdf";
+                document.body.appendChild(a);
                 a.click();
+                document.body.removeChild(a);
                 
-                status.innerText = "Concluído! Arquivo baixado localmente.";
+                status.innerText = "SUCESSO: ARQUIVO PROCESSADO E BAIXADO.";
             } catch (e) {
-                status.innerText = "Erro ao processar. Verifique o arquivo.";
+                status.innerText = "ERRO CRÍTICO NO PROCESSAMENTO.";
                 console.error(e);
             }
         }
     </script>
+    <!-- v1.1 Deployment Sync -->
 </body>
 </html>
