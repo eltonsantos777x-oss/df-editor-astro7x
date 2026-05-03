@@ -2,178 +2,162 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASTRO7X | PDF SUPREME EDITOR v2.0</title>
-    <!-- Motores de PDF -->
+    <title>ASTRO7X // SUPREME EDITOR v3.0</title>
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
-        :root { --neon: #00ff41; --bg: #050505; --dark-gray: #121212; --accent: #008f11; }
-        * { box-sizing: border-box; }
-        body { 
-            background-color: var(--bg); color: var(--neon); 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden;
-        }
-        
-        /* Toolbar Superior */
-        header { 
-            background: var(--dark-gray); border-bottom: 1px solid var(--neon);
-            padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-        }
-        .logo { font-weight: bold; letter-spacing: 2px; font-size: 1.2rem; }
-        .controls { display: flex; gap: 10px; }
-
-        /* Área Principal */
+        :root { --neon: #00ff41; --bg: #050505; --gray: #121212; }
+        body { background: var(--bg); color: var(--neon); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { background: var(--gray); border-bottom: 1px solid var(--neon); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 0 15px rgba(0,255,65,0.2); }
         main { display: flex; flex: 1; overflow: hidden; }
-        #sidebar { 
-            width: 250px; background: var(--dark-gray); border-right: 1px solid var(--neon);
-            padding: 20px; display: flex; flex-direction: column; gap: 15px;
-        }
-        #editor-viewport { 
-            flex: 1; overflow: auto; padding: 40px; background: #1a1a1a;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        /* Elementos de UI */
-        .btn {
-            background: transparent; color: var(--neon); border: 1px solid var(--neon);
-            padding: 8px 15px; cursor: pointer; text-transform: uppercase; font-size: 0.8rem;
-            transition: 0.3s; font-weight: bold;
-        }
+        #sidebar { width: 280px; background: var(--gray); border-right: 1px solid var(--neon); padding: 20px; overflow-y: auto; }
+        #editor-container { flex: 1; overflow: auto; padding: 30px; display: flex; justify-content: center; background: #1a1a1a; position: relative; }
+        canvas { border: 1px solid #444; background: white; cursor: crosshair; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .btn { background: transparent; color: var(--neon); border: 1px solid var(--neon); padding: 12px; cursor: pointer; width: 100%; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
         .btn:hover { background: var(--neon); color: black; box-shadow: 0 0 15px var(--neon); }
-        .btn-main { padding: 12px 25px; border-radius: 4px; border-width: 2px; }
-
-        #pdf-canvas { 
-            box-shadow: 0 0 30px rgba(0,0,0,0.5); background: white; cursor: crosshair;
-            max-width: 100%; height: auto;
-        }
-
-        .tool-box { border: 1px solid #333; padding: 10px; border-radius: 5px; }
-        .status-bar { font-size: 0.7rem; opacity: 0.7; font-family: monospace; }
-        
-        /* Dropzone Inicial */
-        #drop-zone {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg); display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 100;
-        }
+        .tool-label { font-size: 0.7rem; color: #888; margin-bottom: 5px; display: block; }
+        input[type="text"] { background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 8px; width: 100%; margin-bottom: 10px; }
+        #drop-zone { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
     </style>
 </head>
 <body>
 
     <div id="drop-zone">
-        <h1 class="logo">GHOST PDF SUPREME v2.0</h1>
-        <p>Arraste o arquivo ou clique para iniciar o processamento local</p>
+        <h1 style="letter-spacing: 5px;">GHOST SUPREME v3.0</h1>
+        <button class="btn" style="width: 250px;" onclick="document.getElementById('file-input').click()">Carregar PDF Original</button>
         <input type="file" id="file-input" accept="application/pdf" style="display:none">
-        <button class="btn btn-main" onclick="document.getElementById('file-input').click()">Selecionar PDF</button>
     </div>
 
     <header>
-        <div class="logo">ASTRO7X // SUPREME</div>
-        <div class="controls">
-            <button class="btn" onclick="exportPDF()">Exportar e Baixar</button>
-            <button class="btn" style="border-color: #ff4141; color: #ff4141;" onclick="location.reload()">Limpar RAM</button>
-        </div>
+        <div style="font-weight: bold; letter-spacing: 2px;">ASTRO7X // SUPREME ENGINE</div>
+        <button class="btn" style="width: auto; padding: 10px 30px;" onclick="savePDF()">Salvar PDF Limpo</button>
     </header>
 
     <main>
         <div id="sidebar">
-            <div class="tool-box">
-                <h4>🛠️ FERRAMENTAS</h4>
-                <button class="btn" style="width: 100%; margin-bottom: 5px;" onclick="setTool('redact')">Borragem (Redact)</button>
-                <button class="btn" style="width: 100%;" onclick="setTool('text')">Adicionar Texto</button>
-            </div>
-            <div class="status-bar" id="status">Ready...</div>
+            <span class="tool-label">MODO DE EDIÇÃO</span>
+            <button class="btn" onclick="setMode('whiteout')">Borracha Branca (Limpar)</button>
+            <button class="btn" onclick="setMode('text')">Injetar Texto Smart</button>
+            
+            <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+            
+            <span class="tool-label">CONTEÚDO PARA INJEÇÃO</span>
+            <input type="text" id="input-text" placeholder="Digite o novo texto...">
+            <div id="status" style="font-size: 0.7rem; opacity: 0.6; font-family: monospace;">Aguardando ação...</div>
         </div>
-
-        <div id="editor-viewport">
-            <canvas id="pdf-canvas"></canvas>
+        <div id="editor-container">
+            <canvas id="pdf-render"></canvas>
         </div>
     </main>
 
     <script>
-        let pdfDoc = null;
-        let currentPage = 1;
-        let currentFile = null;
-        let activeTool = 'redact';
-        const canvas = document.getElementById('pdf-canvas');
+        let pdfFileBuffer = null;
+        let edits = [];
+        let mode = 'whiteout'; 
+        let isDrawing = false;
+        let startX, startY;
+        
+        const canvas = document.getElementById('pdf-render');
         const ctx = canvas.getContext('2d');
-
-        // Configuração do PDF.js
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         document.getElementById('file-input').onchange = async (e) => {
             const file = e.target.files[0];
-            if (!file) return;
-            currentFile = file;
+            pdfFileBuffer = await file.arrayBuffer();
             document.getElementById('drop-zone').style.display = 'none';
-            loadPDF(file);
+            const loadingTask = pdfjsLib.getDocument(pdfFileBuffer);
+            const pdf = await loadingTask.promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 2.0 }); // Alta definição para precisão
+            
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            document.getElementById('status').innerText = "PDF Carregado. Pronto para Whiteout.";
         };
 
-        async function loadPDF(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            const loadingTask = pdfjsLib.getDocument(arrayBuffer);
-            pdfDoc = await loadingTask.promise;
-            renderPage(1);
-        }
+        function setMode(m) { mode = m; document.getElementById('status').innerText = "Modo: " + m.toUpperCase(); }
 
-        async function renderPage(num) {
-            const page = await pdfDoc.getPage(num);
-            const viewport = page.getViewport({ scale: 1.5 });
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+        canvas.onmousedown = (e) => {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+        };
 
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-            await page.render(renderContext).promise;
-            document.getElementById('status').innerText = `Página ${num} renderizada.`;
-        }
+        canvas.onmouseup = (e) => {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const endX = e.clientX - rect.left;
+            const endY = e.clientY - rect.top;
+            const textValue = document.getElementById('input-text').value;
 
-        function setTool(tool) {
-            activeTool = tool;
-            document.getElementById('status').innerText = `Ferramenta: ${tool.toUpperCase()}`;
-        }
-
-        // Lógica de exportação robusta
-        async function exportPDF() {
-            document.getElementById('status').innerText = "FINALIZANDO DOCUMENTO...";
-            const arrayBuffer = await currentFile.arrayBuffer();
-            const editDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-            const pages = editDoc.getPages();
-            const firstPage = pages[0];
-
-            // Exemplo de Redação Profissional (Limpa o conteúdo real)
-            // Na v2.0 Supreme, aplicamos um "Whitespace Patch" antes do texto
-            const { width, height } = firstPage.getSize();
-            
-            // Simulação de edição em coordenada fixa (expansível para clique no canvas)
-            const font = await editDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
-            
-            firstPage.drawRectangle({
-                x: 50, y: height - 100,
-                width: 400, height: 30,
-                color: PDFLib.rgb(1, 1, 1),
+            edits.push({
+                type: mode,
+                x: startX, y: startY,
+                w: endX - startX, h: endY - startY,
+                text: mode === 'text' ? textValue : null
             });
 
-            firstPage.drawText('REDACTION COMPLETED BY ASTRO7X GHOST', {
-                x: 60, y: height - 85,
-                size: 14,
-                font: font,
-                color: PDFLib.rgb(0, 0, 0),
-            });
+            // Feedback Visual no Canvas
+            if (mode === 'whiteout') {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(startX, startY, endX - startX, endY - startY);
+            } else {
+                ctx.fillStyle = 'black';
+                ctx.font = "bold 14px Arial";
+                ctx.fillText(textValue, startX, startY + 15);
+            }
 
-            const pdfBytes = await editDoc.save();
+            isDrawing = false;
+            document.getElementById('status').innerText = edits.length + " alterações pendentes.";
+        };
+
+        async function savePDF() {
+            const pdfDoc = await PDFLib.PDFDocument.load(pdfFileBuffer);
+            const page = pdfDoc.getPages()[0];
+            const { width, height } = page.getSize();
+            const font = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+
+            const scaleX = width / canvas.width;
+            const scaleY = height / canvas.height;
+
+            for (const edit of edits) {
+                if (edit.type === 'whiteout') {
+                    page.drawRectangle({
+                        x: edit.x * scaleX,
+                        y: height - (edit.y * scaleY) - (edit.h * scaleY),
+                        width: edit.w * scaleX,
+                        height: edit.h * scaleY,
+                        color: PDFLib.rgb(1, 1, 1),
+                    });
+                } else if (edit.type === 'text') {
+                    // Primeiro apaga o fundo (Whiteout automático sob o texto)
+                    page.drawRectangle({
+                        x: edit.x * scaleX,
+                        y: height - (edit.y * scaleY) - 15,
+                        width: edit.text.length * 8, // Ajuste dinâmico
+                        height: 15,
+                        color: PDFLib.rgb(1, 1, 1),
+                    });
+                    page.drawText(edit.text, {
+                        x: edit.x * scaleX,
+                        y: height - (edit.y * scaleY) - 12,
+                        size: 10, // Tamanho padrão dos CRLVs analisados
+                        font: font,
+                        color: PDFLib.rgb(0, 0, 0),
+                    });
+                }
+            }
+
+            // Geração limpa do arquivo sem metadados do projeto
+            const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: "application/pdf" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "supreme_astro7x_" + Date.now() + ".pdf";
-            a.click();
-            document.getElementById('status').innerText = "CONCLUÍDO.";
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "documento_original_editado.pdf";
+            link.click();
+            document.getElementById('status').innerText = "SALVO COM SUCESSO.";
         }
     </script>
 </body>
