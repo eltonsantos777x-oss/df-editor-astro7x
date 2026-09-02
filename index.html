@@ -2,110 +2,280 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>ASTRO7X // GHOST SNIPER v7.0</title>
-    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRO7X // Mail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --neon: #00ff41; --bg: #050505; }
-        body { background: var(--bg); color: var(--neon); font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { background: #121212; border-bottom: 1px solid var(--neon); padding: 10px 20px; display: flex; justify-content: space-between; }
-        #workspace { flex: 1; overflow: auto; display: flex; justify-content: center; background: #1a1a1a; padding: 20px; }
-        canvas { background: white; cursor: text; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .btn { background: transparent; color: var(--neon); border: 1px solid var(--neon); padding: 10px; cursor: pointer; font-weight: bold; }
-        #drop-zone { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body>
-
-    <div id="drop-zone">
-        <h1>GHOST SNIPER v7.0</h1>
-        <button class="btn" onclick="document.getElementById('file-input').click()">SELECIONAR PDF</button>
-        <input type="file" id="file-input" accept="application/pdf" style="display:none">
-    </div>
-
-    <header>
-        <div style="font-weight:bold">ASTRO7X // MODO EDIÇÃO DIRETA</div>
-        <button class="btn" onclick="savePDF()">BAIXAR FINAL (SEM MARCAS)</button>
+<body class="bg-gray-100 text-gray-900 font-sans h-screen flex flex-col overflow-hidden">
+    <!-- Header -->
+    <header class="bg-blue-700 text-white p-4 flex justify-between items-center shadow-md shrink-0">
+        <div class="flex items-center gap-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <h1 class="text-xl font-bold tracking-wider">ASTRO7X MAIL</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-sm text-blue-200">Seu endereço temporário:</div>
+            <div class="bg-blue-800/50 hover:bg-blue-800 transition rounded-lg border border-blue-500/50 flex items-center px-3 py-2 gap-3 group cursor-pointer" onclick="copyEmail()" title="Copiar endereço">
+                <span id="email-address" class="font-mono font-medium tracking-wide">Gerando...</span>
+                <svg id="copy-icon" class="w-5 h-5 text-blue-300 group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </div>
+            <button onclick="init()" class="p-2 hover:bg-blue-600 rounded transition" title="Gerar novo email">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            </button>
+        </div>
     </header>
 
-    <main id="workspace">
-        <canvas id="pdf-canvas"></canvas>
-    </main>
+    <!-- Main Container -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar: Lista de Mensagens -->
+        <aside class="w-1/3 max-w-md bg-white border-r border-gray-200 flex flex-col z-10">
+            <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center shrink-0">
+                <h2 class="font-semibold text-gray-700 flex items-center gap-2">
+                    Caixa de Entrada
+                    <span id="msg-count" class="bg-blue-100 text-blue-800 text-xs py-0.5 px-2 rounded-full hidden">0</span>
+                </h2>
+                <div id="sync-indicator" class="loader hidden"></div>
+            </div>
+            <div id="message-list" class="flex-1 overflow-y-auto divide-y divide-gray-100">
+                <div class="p-8 text-center text-gray-400 flex flex-col items-center justify-center h-full">
+                    <div class="loader mb-4 border-gray-300 border-t-blue-500"></div>
+                    <p>Aguardando conexões...</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Área de Leitura -->
+        <main class="flex-1 bg-white relative flex flex-col">
+            <!-- Estado Vazio -->
+            <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-50/50">
+                <svg class="w-24 h-24 mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <p class="text-lg font-medium text-gray-500">Nenhuma mensagem selecionada</p>
+                <p class="text-sm mt-2">Os emails recebidos aparecerão na lista ao lado.</p>
+            </div>
+
+            <!-- Conteúdo da Mensagem -->
+            <div id="message-content" class="hidden h-full flex-col">
+                <div class="p-6 border-b border-gray-200 shrink-0">
+                    <h1 id="msg-subject" class="text-2xl font-bold text-gray-900 mb-4 break-words"></h1>
+                    <div class="flex justify-between items-start text-sm">
+                        <div class="flex flex-col gap-1">
+                            <div class="text-gray-500">De: <span id="msg-from" class="font-medium text-gray-900"></span></div>
+                            <div class="text-gray-500">Para: <span id="msg-to" class="font-medium text-gray-900"></span></div>
+                        </div>
+                        <div id="msg-date" class="text-gray-500 whitespace-nowrap ml-4"></div>
+                    </div>
+                </div>
+                <div class="flex-1 bg-white relative">
+                    <iframe id="msg-body" class="absolute inset-0 w-full h-full border-0" sandbox="allow-same-origin"></iframe>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script>
-        let pdfBytes = null;
-        let edits = [];
-        const canvas = document.getElementById('pdf-canvas');
-        const ctx = canvas.getContext('2d');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const API_BASE = 'https://api.mail.tm';
+        let currentAccount = null;
+        let currentToken = null;
+        let messages = [];
+        let pollInterval = null;
+        let activeMessageId = null;
 
-        document.getElementById('file-input').onchange = async (e) => {
-            pdfBytes = await e.target.files[0].arrayBuffer();
-            document.getElementById('drop-zone').style.display = 'none';
-            render();
-        };
+        async function init() {
+            // Reset
+            if (pollInterval) clearInterval(pollInterval);
+            messages = [];
+            currentAccount = null;
+            currentToken = null;
+            activeMessageId = null;
+            
+            document.getElementById('email-address').textContent = 'Gerando...';
+            document.getElementById('message-list').innerHTML = '<div class="p-8 text-center text-gray-400">Criando caixa de entrada...</div>';
+            document.getElementById('msg-count').classList.add('hidden');
+            document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('message-content').classList.add('hidden');
 
-        async function render() {
-            const pdf = await pdfjsLib.getDocument({data: pdfBytes}).promise;
-            const page = await pdf.getPage(1);
-            const viewport = page.getViewport({ scale: 1.5 });
-            canvas.width = viewport.width; canvas.height = viewport.height;
-            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            try {
+                // 1. Obter domínios disponíveis
+                const domainsRes = await fetch(`${API_BASE}/domains`);
+                const domainsData = await domainsRes.json();
+                const domain = domainsData['hydra:member'][0].domain;
 
-            edits.forEach(edit => {
-                ctx.fillStyle = "white";
-                ctx.fillRect(edit.x - 2, edit.y - 12, ctx.measureText(edit.text).width + 4, 15);
-                ctx.fillStyle = "black";
-                ctx.font = "bold 13px Arial";
-                ctx.fillText(edit.text, edit.x, edit.y);
-            });
-        }
+                // 2. Gerar credenciais
+                const username = Math.random().toString(36).substring(2, 12);
+                const password = Math.random().toString(36).substring(2, 16) + 'Aa1!';
+                const address = `${username}@${domain}`;
 
-        canvas.onclick = (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const text = prompt("Novo texto para esta posição:");
-            if (text) {
-                edits.push({ x, y, text });
-                render();
+                // 3. Criar conta
+                const createRes = await fetch(`${API_BASE}/accounts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, password })
+                });
+                
+                if (!createRes.ok) throw new Error('Falha ao criar conta no provedor');
+
+                // 4. Autenticar para pegar o token JWT
+                const tokenRes = await fetch(`${API_BASE}/token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, password })
+                });
+
+                const tokenData = await tokenRes.json();
+                currentToken = tokenData.token;
+                currentAccount = address;
+
+                document.getElementById('email-address').textContent = address;
+                
+                // Iniciar polling
+                renderMessageList(); // Limpa estado de carregamento
+                pollMessages();
+                pollInterval = setInterval(pollMessages, 5000); // Checa a cada 5s
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('email-address').textContent = "Erro na geração";
+                document.getElementById('message-list').innerHTML = '<div class="p-8 text-center text-red-400">Erro ao conectar com servidor de email.</div>';
             }
-        };
-
-        async function savePDF() {
-            const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
-            const page = pdfDoc.getPages()[0];
-            const { width, height } = page.getSize();
-            const font = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
-            const scaleX = width / canvas.width;
-            const scaleY = height / canvas.height;
-
-            edits.forEach(edit => {
-                // Apaga o original (Whiteout)
-                page.drawRectangle({
-                    x: edit.x * scaleX,
-                    y: height - (edit.y * scaleY) - 2,
-                    width: edit.text.length * 6,
-                    height: 10,
-                    color: PDFLib.rgb(1, 1, 1)
-                });
-                // Escreve o novo com a fonte do CRLV
-                page.drawText(edit.text, {
-                    x: edit.x * scaleX,
-                    y: height - (edit.y * scaleY),
-                    size: 9,
-                    font: font,
-                    color: PDFLib.rgb(0, 0, 0)
-                });
-            });
-
-            const final = await pdfDoc.save();
-            const blob = new Blob([final], { type: "application/pdf" });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = "editado_astro7x.pdf";
-            a.click();
         }
+
+        async function pollMessages() {
+            if (!currentToken) return;
+            const indicator = document.getElementById('sync-indicator');
+            indicator.classList.remove('hidden');
+
+            try {
+                const res = await fetch(`${API_BASE}/messages`, {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                if (!res.ok) throw new Error('Falha na sincronização');
+                
+                const data = await res.json();
+                const newMessages = data['hydra:member'];
+
+                // Comparação simples para evitar re-render desnecessário
+                if (newMessages.length !== messages.length || (newMessages.length > 0 && newMessages[0].id !== messages[0].id)) {
+                    messages = newMessages;
+                    
+                    const countBadge = document.getElementById('msg-count');
+                    countBadge.textContent = messages.length;
+                    messages.length > 0 ? countBadge.classList.remove('hidden') : countBadge.classList.add('hidden');
+                    
+                    renderMessageList();
+                }
+            } catch (err) {
+                console.error('Erro ao buscar mensagens:', err);
+            } finally {
+                setTimeout(() => indicator.classList.add('hidden'), 800);
+            }
+        }
+
+        function renderMessageList() {
+            const list = document.getElementById('message-list');
+            
+            if (messages.length === 0) {
+                list.innerHTML = `
+                    <div class="p-8 flex flex-col items-center justify-center h-full text-gray-400">
+                        <svg class="w-12 h-12 mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                        <p class="text-sm">Caixa de entrada vazia</p>
+                        <p class="text-xs mt-1 text-gray-300">Atualizando automaticamente...</p>
+                    </div>`;
+                return;
+            }
+
+            list.innerHTML = messages.map(msg => `
+                <div onclick="openMessage('${msg.id}')" id="item-${msg.id}" class="p-4 cursor-pointer transition-colors border-l-4 ${activeMessageId === msg.id ? 'bg-blue-50 border-blue-500' : 'bg-white border-transparent hover:bg-gray-50'}">
+                    <div class="flex justify-between items-baseline mb-1">
+                        <div class="font-semibold text-gray-900 truncate pr-2">${msg.from.name || msg.from.address}</div>
+                        <div class="text-xs text-gray-500 shrink-0">${formatDateShort(msg.createdAt)}</div>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700 truncate mb-1">${msg.subject || '(Sem assunto)'}</div>
+                    <div class="text-xs text-gray-500 truncate">${msg.intro || '...'}</div>
+                </div>
+            `).join('');
+        }
+
+        async function openMessage(id) {
+            activeMessageId = id;
+            renderMessageList(); // Atualiza a seleção na UI
+
+            document.getElementById('empty-state').classList.add('hidden');
+            const content = document.getElementById('message-content');
+            content.classList.remove('hidden');
+            content.style.opacity = '0.4'; // loading state visual
+
+            try {
+                const res = await fetch(`${API_BASE}/messages/${id}`, {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                const msg = await res.json();
+
+                document.getElementById('msg-subject').textContent = msg.subject || '(Sem assunto)';
+                document.getElementById('msg-from').textContent = msg.from.name ? `${msg.from.name} <${msg.from.address}>` : msg.from.address;
+                document.getElementById('msg-to').textContent = msg.to.map(t => t.address).join(', ');
+                document.getElementById('msg-date').textContent = new Date(msg.createdAt).toLocaleString('pt-BR');
+                
+                const iframe = document.getElementById('msg-body');
+                
+                // Prioriza HTML, senão cai para texto simples formatado
+                let htmlContent = '';
+                if (msg.html && msg.html.length > 0) {
+                    htmlContent = msg.html[0];
+                } else if (msg.text) {
+                    htmlContent = `<div style="font-family: sans-serif; padding: 20px; white-space: pre-wrap; color: #333; line-height: 1.5;">${msg.text}</div>`;
+                }
+
+                iframe.srcdoc = htmlContent;
+            } catch (err) {
+                console.error(err);
+                document.getElementById('msg-body').srcdoc = `<div style="color:red; font-family:sans-serif; padding:20px;">Erro ao carregar o corpo da mensagem.</div>`;
+            } finally {
+                content.style.opacity = '1';
+            }
+        }
+
+        function copyEmail() {
+            if (!currentAccount) return;
+            navigator.clipboard.writeText(currentAccount);
+            
+            const icon = document.getElementById('copy-icon');
+            icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>`;
+            icon.classList.add('text-green-400');
+            icon.classList.remove('text-blue-300');
+            
+            setTimeout(() => {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>`;
+                icon.classList.remove('text-green-400');
+                icon.classList.add('text-blue-300');
+            }, 2000);
+        }
+
+        function formatDateShort(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            if (date.toDateString() === today.toDateString()) {
+                return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            }
+            return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        }
+
+        // Start
+        window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
