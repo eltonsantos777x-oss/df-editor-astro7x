@@ -1,9 +1,13 @@
 {
-  "generated_at": "2026-09-02T23:00:13.745320+00:00",
+  "generated_at": "2026-09-02T23:02:32.922691+00:00",
   "files": [
     {
       "path": "index.html",
-      "bytes": 4825
+      "bytes": 15093
+    },
+    {
+      "path": ".lovasiri/sync.json",
+      "bytes": 80
     }
   ],
   "dependencies": []
