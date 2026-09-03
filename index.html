@@ -3,204 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASTRO7X - CHK</title>
+    <title>Projeto Limpo</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 min-h-screen font-sans text-slate-300 p-4 md:p-8">
-    <div class="max-w-6xl mx-auto space-y-6">
-        <!-- Header -->
-        <header class="flex items-center justify-between pb-4 border-b border-slate-800">
-            <h1 class="text-2xl font-bold text-white flex items-center gap-2">
-                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                ASTRO7X <span class="text-green-500">CHK</span>
-            </h1>
-            <div class="text-sm text-slate-500">Status: <span class="text-green-500 font-medium" id="status-text">Aguardando</span></div>
-        </header>
-
-        <!-- Main Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Entrada de Dados -->
-            <div class="lg:col-span-1 space-y-4">
-                <div class="bg-slate-900 rounded-xl border border-slate-800 p-4 shadow-lg">
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Lista de Cartões (Formato: CC|MES|ANO|CVV)</label>
-                    <textarea 
-                        id="lista" 
-                        rows="8" 
-                        class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm font-mono text-slate-300 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors resize-none"
-                        placeholder="4512345678901234|12|25|123&#10;5512345678901234|08|27|456"
-                    ></textarea>
-                    
-                    <div class="grid grid-cols-2 gap-3 mt-4">
-                        <button onclick="startCheck()" id="btn-start" class="w-full bg-green-600 hover:bg-green-500 text-white font-medium py-2 px-4 rounded-lg transition-colors flex justify-center items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Iniciar
-                        </button>
-                        <button onclick="stopCheck()" id="btn-stop" class="w-full bg-red-600/20 text-red-500 hover:bg-red-600/30 font-medium py-2 px-4 rounded-lg transition-colors border border-red-500/30 flex justify-center items-center gap-2" disabled>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path></svg>
-                            Parar
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Estatísticas -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-900 rounded-xl border border-slate-800 p-4">
-                        <div class="text-sm text-slate-500 mb-1">Aprovadas (GG)</div>
-                        <div class="text-2xl font-bold text-green-500" id="count-gg">0</div>
-                    </div>
-                    <div class="bg-slate-900 rounded-xl border border-slate-800 p-4">
-                        <div class="text-sm text-slate-500 mb-1">Reprovadas</div>
-                        <div class="text-2xl font-bold text-red-500" id="count-die">0</div>
-                    </div>
-                    <div class="bg-slate-900 rounded-xl border border-slate-800 p-4">
-                        <div class="text-sm text-slate-500 mb-1">Testadas</div>
-                        <div class="text-2xl font-bold text-blue-500" id="count-tested">0</div>
-                    </div>
-                    <div class="bg-slate-900 rounded-xl border border-slate-800 p-4">
-                        <div class="text-sm text-slate-500 mb-1">Total</div>
-                        <div class="text-2xl font-bold text-slate-300" id="count-total">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Resultados -->
-            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Painel GG -->
-                <div class="bg-slate-900 rounded-xl border border-slate-800 shadow-lg flex flex-col h-[600px]">
-                    <div class="p-3 border-b border-slate-800 bg-green-950/30 rounded-t-xl flex justify-between items-center">
-                        <h3 class="font-medium text-green-500 flex items-center gap-2">
-                            Aprovadas 
-                            <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full" id="badge-gg">0</span>
-                        </h3>
-                    </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-2 font-mono text-sm" id="list-gg">
-                        <!-- Itens GG aparecem aqui -->
-                    </div>
-                </div>
-
-                <!-- Painel Die -->
-                <div class="bg-slate-900 rounded-xl border border-slate-800 shadow-lg flex flex-col h-[600px]">
-                    <div class="p-3 border-b border-slate-800 bg-red-950/30 rounded-t-xl flex justify-between items-center">
-                        <h3 class="font-medium text-red-500 flex items-center gap-2">
-                            Reprovadas 
-                            <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full" id="badge-die">0</span>
-                        </h3>
-                    </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-2 font-mono text-sm" id="list-die">
-                        <!-- Itens Die aparecem aqui -->
-                    </div>
-                </div>
-            </div>
+<body class="bg-slate-950 min-h-screen font-sans text-slate-300 flex flex-col items-center justify-center p-4">
+    <div class="max-w-md text-center space-y-4">
+        <div class="w-16 h-16 bg-slate-900 rounded-2xl border border-slate-800 flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Ambiente Limpo</h1>
+        <p class="text-slate-500">
+            Todos os dados, configurações e interfaces anteriores foram removidos com sucesso. O projeto está zerado e pronto para um novo começo.
+        </p>
+        <div class="pt-8">
+            <p class="text-sm font-medium text-slate-400">O que vamos construir agora?</p>
         </div>
     </div>
-
-    <script>
-        let isRunning = false;
-        let counters = { gg: 0, die: 0, tested: 0, total: 0 };
-
-        function updateUI() {
-            document.getElementById('count-gg').innerText = counters.gg;
-            document.getElementById('badge-gg').innerText = counters.gg;
-            document.getElementById('count-die').innerText = counters.die;
-            document.getElementById('badge-die').innerText = counters.die;
-            document.getElementById('count-tested').innerText = counters.tested;
-            document.getElementById('count-total').innerText = counters.total;
-        }
-
-        function createResultElement(text, isGG) {
-            const div = document.createElement('div');
-            div.className = `p-2 rounded border ${isGG ? 'bg-green-950/30 border-green-900 text-green-400' : 'bg-red-950/30 border-red-900 text-red-400'} break-all`;
-            
-            const badge = document.createElement('span');
-            badge.className = `inline-block px-1.5 py-0.5 rounded text-xs mr-2 ${isGG ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`;
-            badge.innerText = isGG ? 'GG' : 'DIE';
-            
-            const textNode = document.createTextNode(text);
-            
-            div.appendChild(badge);
-            div.appendChild(textNode);
-            return div;
-        }
-
-        async function startCheck() {
-            if (isRunning) return;
-            
-            const input = document.getElementById('lista').value.trim();
-            if (!input) {
-                alert('Cole uma lista de cartões para iniciar.');
-                return;
-            }
-
-            const lines = input.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            if (lines.length === 0) return;
-
-            isRunning = true;
-            counters = { gg: 0, die: 0, tested: 0, total: lines.length };
-            
-            document.getElementById('btn-start').disabled = true;
-            document.getElementById('btn-start').classList.add('opacity-50', 'cursor-not-allowed');
-            document.getElementById('btn-stop').disabled = false;
-            document.getElementById('btn-stop').classList.remove('opacity-50');
-            document.getElementById('lista').disabled = true;
-            
-            document.getElementById('status-text').innerText = 'Testando...';
-            document.getElementById('status-text').className = 'text-blue-500 font-medium animate-pulse';
-
-            document.getElementById('list-gg').innerHTML = '';
-            document.getElementById('list-die').innerHTML = '';
-            updateUI();
-
-            for (let i = 0; i < lines.length; i++) {
-                if (!isRunning) break;
-
-                const card = lines[i];
-                
-                // Simulação de delay de requisição (500ms a 1200ms)
-                const delay = Math.floor(Math.random() * 700) + 500;
-                await new Promise(r => setTimeout(r, delay));
-
-                // Validador visual simulado (gera Aprovada/Reprovada baseado no algoritmo de Luhn ou formato)
-                const isGG = Math.random() > 0.7; 
-
-                counters.tested++;
-                
-                const resultEl = createResultElement(card, isGG);
-                if (isGG) {
-                    counters.gg++;
-                    document.getElementById('list-gg').prepend(resultEl);
-                } else {
-                    counters.die++;
-                    document.getElementById('list-die').prepend(resultEl);
-                }
-                
-                updateUI();
-            }
-
-            stopCheck(true);
-        }
-
-        function stopCheck(completed = false) {
-            isRunning = false;
-            
-            document.getElementById('btn-start').disabled = false;
-            document.getElementById('btn-start').classList.remove('opacity-50', 'cursor-not-allowed');
-            document.getElementById('btn-stop').disabled = true;
-            document.getElementById('btn-stop').classList.add('opacity-50');
-            document.getElementById('lista').disabled = false;
-
-            const statusEl = document.getElementById('status-text');
-            statusEl.classList.remove('animate-pulse');
-            
-            if (completed) {
-                statusEl.innerText = 'Finalizado';
-                statusEl.className = 'text-green-500 font-medium';
-            } else {
-                statusEl.innerText = 'Parado';
-                statusEl.className = 'text-yellow-500 font-medium';
-            }
-        }
-    </script>
 </body>
 </html>
