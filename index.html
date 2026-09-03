@@ -3,13 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASTRO7X</title>
+    <title>ASTRO7X TWEAKER</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262626; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #404040; 
+        }
+        /* Custom toggle classes */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #06b6d4;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #06b6d4;
+        }
+        .toggle-checkbox {
+            right: 0;
+            z-index: 1;
+            border-color: #e5e7eb;
+            transition: all 0.3s;
+        }
+        .toggle-label {
+            background-color: #3f3f46;
+            transition: all 0.3s;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-200 min-h-screen flex items-center justify-center font-sans">
-    <div class="text-center">
-        <h1 class="text-3xl font-bold text-slate-400 mb-4">Ambiente Limpo</h1>
-        <p class="text-slate-500">O projeto foi zerado com sucesso. Aguardando novos comandos.</p>
+<body class="bg-[#09090b] text-zinc-300 h-screen w-screen flex flex-col font-sans select-none overflow-hidden">
+    <!-- Window Title Bar -->
+    <div class="h-10 bg-[#18181b] border-b border-zinc-800 flex items-center justify-between px-4 flex-shrink-0">
+        <div class="flex items-center gap-6">
+            <!-- Window Controls -->
+            <div class="flex gap-2">
+                <div class="w-3 h-3 rounded-full bg-red-500 cursor-pointer hover:bg-red-400"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer hover:bg-yellow-400"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500 cursor-pointer hover:bg-green-400"></div>
+            </div>
+            <div class="text-xs font-bold tracking-[0.2em] text-cyan-500">ASTRO7X <span class="text-zinc-500 font-medium">OS OPTIMIZER</span></div>
+        </div>
+        <div class="text-xs text-zinc-600">v1.0.0 (Build 984)</div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 h-full overflow-hidden">
+        <!-- Sidebar -->
+        <div class="w-64 bg-[#121214] border-r border-zinc-800/50 p-4 flex flex-col gap-2 flex-shrink-0">
+            <div class="text-xs font-bold text-zinc-600 mb-2 mt-2 px-2 uppercase tracking-wider">Menu Principal</div>
+            
+            <button class="flex items-center justify-between px-4 py-3 bg-cyan-950/30 text-cyan-400 border border-cyan-900/50 rounded-md text-sm font-medium transition-all shadow-[0_0_10px_rgba(6,182,212,0.1)]">
+                <span class="flex items-center gap-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    Painel Geral
+                </span>
+                <div class="w-1.5 h-1.5 bg-cyan-500 rounded-full shadow-[0_0_5px_rgba(6,182,212,0.8)]"></div>
+            </button>
+            
+            <button class="flex items-center gap-3 px-4 py-3 text-zinc-400 rounded-md text-sm font-medium transition-colors hover:bg-zinc-800/50 hover:text-zinc-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Otimizações de Sistema
+            </button>
+            
+            <button class="flex items-center gap-3 px-4 py-3 text-zinc-400 rounded-md text-sm font-medium transition-colors hover:bg-zinc-800/50 hover:text-zinc-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Latência e Input Lag
+            </button>
+            
+            <button class="flex items-center gap-3 px-4 py-3 text-zinc-400 rounded-md text-sm font-medium transition-colors hover:bg-zinc-800/50 hover:text-zinc-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                Rede e Ping
+            </button>
+
+            <button class="flex items-center gap-3 px-4 py-3 text-zinc-400 rounded-md text-sm font-medium transition-colors hover:bg-zinc-800/50 hover:text-zinc-200 mt-auto">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Restaurar Padrões
+            </button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <!-- Background glow -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-900/10 blur-[120px] rounded-full pointer-events-none"></div>
+            
+            <!-- Header -->
+            <div class="flex justify-between items-end mb-10 relative z-10">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-white mb-2 tracking-tight">Otimização de Performance</h1>
+                    <p class="text-sm text-zinc-400 max-w-lg">Ajuste os parâmetros do Windows para remover atrasos de entrada, desativar serviços inúteis e extrair o máximo de FPS do seu hardware.</p>
+                </div>
+                <button class="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md font-bold shadow-[0_0_20px_rgba(8,145,178,0.4)] transition-all uppercase tracking-wider text-sm flex items-center gap-2 group">
+                    <svg class="w-5 h-5 group-hover:animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Otimizar Tudo
+                </button>
+            </div>
+
+            <!-- Tweaks Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-10">
+                
+                <!-- Card 1: CPU & RAM -->
+                <div class="bg-[#18181b] border border-zinc-800/80 rounded-xl overflow-hidden flex flex-col">
+                    <div class="px-5 py-4 border-b border-zinc-800/80 bg-zinc-900/30">
+                        <h2 class="text-base font-bold text-zinc-100 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                            Processador e Memória
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-5 flex-1">
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">Desativar HPET (High Precision Event Timer)</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Reduz micro-stuttering (engasgos) e diminui a latência do sistema forçando o uso de timers mais rápidos (TSC).</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="hpet" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                <label for="hpet" class="toggle-label block overflow-hidden h-6 rounded-full bg-cyan-500 cursor-pointer"></label>
+                            </div>
+                        </div>
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">CPU Core Unparking</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Impede que o Windows coloque núcleos do processador em modo de economia, garantindo resposta imediata.</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="unpark" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                <label for="unpark" class="toggle-label block overflow-hidden h-6 rounded-full bg-zinc-700 cursor-pointer"></label>
+                            </div>
+                        </div>
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">Otimização de Agendamento RAM (LargeSystemCache)</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Ajusta o comportamento do cache de memória para priorizar programas em primeiro plano (jogos).</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="ram" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                <label for="ram" class="toggle-label block overflow-hidden h-6 rounded-full bg-cyan-500 cursor-pointer"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Input & USB -->
+                <div class="bg-[#18181b] border border-zinc-800/80 rounded-xl overflow-hidden flex flex-col">
+                    <div class="px-5 py-4 border-b border-zinc-800/80 bg-zinc-900/30">
+                        <h2 class="text-base font-bold text-zinc-100 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                            Periféricos e Input Lag
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-5 flex-1">
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">Polling Rate Force (1000Hz+)</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Remove limitações do Windows para portas USB, permitindo taxas de atualização máximas para mouse e teclado.</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="usb" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                <label for="usb" class="toggle-label block overflow-hidden h-6 rounded-full bg-cyan-500 cursor-pointer"></label>
+                            </div>
+                        </div>
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">Desativar Mouse Acceleration (FSE)</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Desativa completamente a curva de aceleração nativa via registro para rastreamento 1:1 raw (perfeito para FPS).</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="mouse" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                <label for="mouse" class="toggle-label block overflow-hidden h-6 rounded-full bg-cyan-500 cursor-pointer"></label>
+                            </div>
+                        </div>
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">Desativar Suspensão Seletiva USB</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Previne que o Windows desligue portas USB para economizar energia, evitando falhas de registro de cliques.</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="usbsuspend" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                <label for="usbsuspend" class="toggle-label block overflow-hidden h-6 rounded-full bg-zinc-700 cursor-pointer"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Windows Services -->
+                <div class="bg-[#18181b] border border-zinc-800/80 rounded-xl overflow-hidden flex flex-col">
+                    <div class="px-5 py-4 border-b border-zinc-800/80 bg-zinc-900/30">
+                        <h2 class="text-base font-bold text-zinc-100 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Serviços do Windows
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-5 flex-1">
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">Desabilitar Telemetria (Data Collection)</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Bloqueia o envio de dados diagnósticos para a Microsoft em segundo plano, liberando CPU e rede.</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="telemetry" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                <label for="telemetry" class="toggle-label block overflow-hidden h-6 rounded-full bg-cyan-500 cursor-pointer"></label>
+                            </div>
+                        </div>
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">Game Mode Force (Prioridade Realtime)</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Ajusta o Win32PrioritySeparation no Regedit para focar todos os ciclos de CPU no processo em foco na tela.</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="gamemode" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                <label for="gamemode" class="toggle-label block overflow-hidden h-6 rounded-full bg-cyan-500 cursor-pointer"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Network -->
+                <div class="bg-[#18181b] border border-zinc-800/80 rounded-xl overflow-hidden flex flex-col">
+                    <div class="px-5 py-4 border-b border-zinc-800/80 bg-zinc-900/30">
+                        <h2 class="text-base font-bold text-zinc-100 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                            Rede e Latência
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-5 flex-1">
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">Otimizar TCP/IP (Nagle's Algorithm)</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Desativa o atraso no envio de pacotes de rede (TcpAckFrequency), reduzindo o PING e hitreg delay em jogos multiplayer.</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="tcp" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                <label for="tcp" class="toggle-label block overflow-hidden h-6 rounded-full bg-zinc-700 cursor-pointer"></label>
+                            </div>
+                        </div>
+                        <!-- Tweak Item -->
+                        <div class="flex items-start justify-between group">
+                            <div class="pr-6">
+                                <div class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-400 transition-colors">DNS Cache Optimization</div>
+                                <div class="text-xs text-zinc-500 mt-1 leading-relaxed">Aumenta o limite de cache e reduz consultas redundantes (MaxCacheTtl), estabilizando rotas.</div>
+                            </div>
+                            <div class="relative inline-block w-12 mr-2 align-middle select-none flex-shrink-0 mt-1">
+                                <input type="checkbox" name="toggle" id="dns" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                <label for="dns" class="toggle-label block overflow-hidden h-6 rounded-full bg-cyan-500 cursor-pointer"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="mt-8 text-center text-xs text-zinc-600">
+                Aviso: Modificar configurações avançadas do sistema pode exigir um reinício para aplicar os efeitos completos.
+            </div>
+        </div>
     </div>
 </body>
 </html>
