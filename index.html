@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobile Spoofing Environment</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .animate-matrix-bg {
-            background: radial-gradient(circle at center, #022c16 0%, #020617 100%);
-        }
-    </style>
 </head>
 <body class="bg-slate-950 text-slate-200 min-h-screen p-4 md:p-8 font-sans">
     <div class="max-w-5xl mx-auto space-y-8">
@@ -77,7 +72,7 @@
                             <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-slate-700 bg-slate-800 text-slate-400">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                             </span>
-                            <input type="url" id="target-url" value="https://www.google.com" class="flex-1 block w-full min-w-0 rounded-none rounded-r-lg bg-slate-950 border border-slate-700 px-4 py-3 text-emerald-400 font-mono focus:outline-none focus:border-emerald-500 transition-colors" placeholder="https://exemplo.com">
+                            <input type="url" id="target-url" value="https://example.com" class="flex-1 block w-full min-w-0 rounded-none rounded-r-lg bg-slate-950 border border-slate-700 px-4 py-3 text-emerald-400 font-mono focus:outline-none focus:border-emerald-500 transition-colors" placeholder="https://exemplo.com">
                         </div>
                     </div>
                     
@@ -95,7 +90,7 @@
                 <!-- Browser Header -->
                 <div class="bg-slate-800 p-3 flex items-center gap-4 border-b border-slate-700">
                     <div class="flex gap-2">
-                        <div class="w-3.5 h-3.5 rounded-full bg-red-500 cursor-pointer hover:bg-red-400 flex items-center justify-center group" onclick="closeBrowser()">
+                        <div class="w-3.5 h-3.5 rounded-full bg-red-500 cursor-pointer hover:bg-red-400 flex items-center justify-center group" onclick="closeBrowser()" title="Fechar Sessão">
                             <svg class="w-2 h-2 text-red-900 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </div>
                         <div class="w-3.5 h-3.5 rounded-full bg-yellow-500"></div>
@@ -103,49 +98,47 @@
                     </div>
                     <div class="flex-1 flex bg-slate-950 rounded-lg px-4 py-2 items-center gap-3 border border-slate-700">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <span id="browser-address-bar" class="text-sm text-emerald-400 font-mono flex-1 truncate select-all">https://www.google.com</span>
+                        <span id="browser-address-bar" class="text-sm text-emerald-400 font-mono flex-1 truncate select-all"></span>
                     </div>
                 </div>
                 
-                <!-- Browser Content -->
-                <div class="flex-1 bg-slate-950 flex flex-col items-center justify-center text-center relative overflow-hidden animate-matrix-bg p-6">
-                    <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4=')] mix-blend-overlay"></div>
+                <!-- Browser Content (Iframe Embutido) -->
+                <div class="flex-1 bg-white relative overflow-hidden flex flex-col">
+                    <iframe id="browser-iframe" class="flex-1 w-full border-none bg-white" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
                     
-                    <div class="relative z-10 w-full max-w-2xl bg-slate-900/80 backdrop-blur border border-emerald-900/50 p-8 rounded-2xl shadow-[0_0_30px_rgba(5,150,105,0.15)]">
-                        <div class="flex justify-center mb-6">
-                            <div class="p-4 bg-emerald-950 rounded-full border border-emerald-800">
-                                <svg class="w-12 h-12 text-emerald-500 animate-[spin_4s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
-                            </div>
+                    <!-- Floating Spoof Status Overlay -->
+                    <div class="absolute bottom-6 right-6 w-80 bg-slate-950/95 backdrop-blur-md border border-emerald-500/40 p-4 rounded-xl shadow-[0_0_30px_rgba(5,150,105,0.3)] pointer-events-none z-20">
+                        <div class="flex justify-between items-center mb-3 border-b border-emerald-900/50 pb-2">
+                            <span class="text-xs font-bold text-emerald-400 flex items-center gap-2">
+                                <svg class="w-4 h-4 animate-[spin_3s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                ASTRO7X SPOOF ENGINE
+                            </span>
+                            <span class="flex h-2.5 w-2.5 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
                         </div>
-                        <h3 class="text-2xl font-bold text-emerald-400 mb-2">Sessão Ativa & Blindada</h3>
-                        <p class="text-slate-400 mb-8">Navegando no site alvo. Todos os scripts de fingerprinting estão recebendo a assinatura falsa.</p>
                         
-                        <div class="space-y-4 text-left">
-                            <div class="bg-black/50 p-4 rounded-lg border border-slate-800">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs text-slate-500 font-mono uppercase tracking-wider">Status Câmera / WebRTC</span>
-                                    <span class="flex h-2 w-2 relative">
-                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                    </span>
-                                </div>
-                                <div class="text-sm font-mono text-emerald-300" id="virtual-cam-status"></div>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-[9px] text-slate-500 font-mono uppercase tracking-wider block mb-1">User-Agent</span>
+                                <div class="text-[10px] font-mono text-emerald-300/80 break-all leading-tight" id="virtual-ua"></div>
                             </div>
                             
-                            <div class="bg-black/50 p-4 rounded-lg border border-slate-800">
-                                <div class="text-xs text-slate-500 font-mono uppercase tracking-wider mb-2">Header User-Agent Injetado</div>
-                                <div class="text-xs font-mono text-slate-300 break-all leading-relaxed" id="virtual-ua"></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <span class="text-[9px] text-slate-500 font-mono uppercase tracking-wider block mb-1">Canvas/WebGL</span>
+                                    <div class="text-[10px] font-mono text-emerald-300/80 truncate" id="virtual-gpu"></div>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] text-slate-500 font-mono uppercase tracking-wider block mb-1">Network/IP</span>
+                                    <div class="text-[10px] font-mono text-emerald-300/80 truncate">Bypass 4G/Proxy</div>
+                                </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-black/50 p-3 rounded-lg border border-slate-800 flex items-center justify-between">
-                                    <span class="text-xs text-slate-500 font-mono">Canvas Hash</span>
-                                    <span class="text-xs text-emerald-400 font-mono">SPOOFED</span>
-                                </div>
-                                <div class="bg-black/50 p-3 rounded-lg border border-slate-800 flex items-center justify-between">
-                                    <span class="text-xs text-slate-500 font-mono">WebGL Vendor</span>
-                                    <span class="text-xs text-emerald-400 font-mono" id="virtual-gpu"></span>
-                                </div>
+                            <div class="bg-black/60 p-2.5 rounded border border-emerald-900/50 mt-2">
+                                <span class="text-[9px] text-slate-500 font-mono uppercase tracking-wider block mb-1">Virtual Camera (VCAM)</span>
+                                <div class="text-[10px] font-mono leading-relaxed" id="virtual-cam-status"></div>
                             </div>
                         </div>
                     </div>
@@ -182,12 +175,10 @@
                 const modelInfo = models[Math.floor(Math.random() * models.length)];
                 const androidVer = androidVersions[Math.floor(Math.random() * androidVersions.length)];
                 
-                // Geradores realistas
                 const imei = '35' + Math.floor(Math.random() * 10000000000000).toString().padStart(13, '0');
                 const androidId = generateRandomString(16).toLowerCase();
                 const mac = "02:00:00:" + Array.from({length: 3}, () => Math.floor(Math.random()*256).toString(16).padStart(2, '0')).join(':');
                 
-                // Chrome version aleatório (118 to 121)
                 const chromeVer = Math.floor(Math.random() * 4) + 118;
                 const ua = `Mozilla/5.0 (Linux; Android ${androidVer}; ${modelInfo.model} Build/${modelInfo.build}; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/${chromeVer}.0.${Math.floor(Math.random()*10000)}.163 Mobile Safari/537.36`;
 
@@ -237,7 +228,6 @@
                 document.getElementById('metadata-list').innerHTML = metadataHtml;
                 btn.innerHTML = originalText;
                 
-                // Limpa o spoof anterior se existir
                 cameraSpoofFile = null;
                 document.querySelector('input[type="file"]').value = '';
                 document.getElementById('file-label').innerHTML = `
@@ -271,26 +261,27 @@
         function launchBrowser() {
             if(!currentDevice) return;
             
-            // Define URL alvo digitada ou fallback
-            const targetUrl = document.getElementById('target-url').value || 'https://www.google.com';
-            document.getElementById('browser-address-bar').innerText = targetUrl;
+            let targetUrl = document.getElementById('target-url').value;
+            if (!targetUrl) targetUrl = 'https://example.com';
+            if (!targetUrl.startsWith('http')) targetUrl = 'https://' + targetUrl;
             
-            // Popula os dados no modal do navegador virtual
+            document.getElementById('browser-address-bar').innerText = targetUrl;
+            document.getElementById('browser-iframe').src = targetUrl;
+            
             document.getElementById('virtual-ua').innerText = currentDevice.ua;
             document.getElementById('virtual-gpu').innerText = currentDevice.gpu;
             
             const camStatus = document.getElementById('virtual-cam-status');
             if(cameraSpoofFile) {
-                camStatus.innerHTML = `> OVERRIDE navigator.mediaDevices.getUserMedia()<br>> INJETANDO: <span class="text-white">${cameraSpoofFile.name}</span>`;
-                camStatus.classList.remove('text-red-400');
+                camStatus.innerHTML = `> Hooking getUserMedia()...<br>> Media injetada: <span class="text-white">${cameraSpoofFile.name}</span><br>> Liveness bypass: <span class="text-emerald-400">Ativo</span>`;
+                camStatus.classList.remove('text-red-400', 'text-amber-400');
                 camStatus.classList.add('text-emerald-400');
             } else {
-                camStatus.innerHTML = `> TELA PRETA (Nenhuma mídia fornecida)<br>> O site alvo verá uma câmera vazia/bloqueada.`;
-                camStatus.classList.remove('text-emerald-400');
+                camStatus.innerHTML = `> Hooking getUserMedia()...<br>> <span class="text-amber-400">Aviso: Nenhuma mídia fornecida.</span><br>> Saída: Tela preta.`;
+                camStatus.classList.remove('text-emerald-400', 'text-red-400');
                 camStatus.classList.add('text-amber-400');
             }
 
-            // Exibe modal com fade
             const modal = document.getElementById('browser-modal');
             modal.classList.remove('hidden');
             modal.style.opacity = '0';
@@ -305,6 +296,7 @@
             modal.style.opacity = '0';
             setTimeout(() => {
                 modal.classList.add('hidden');
+                document.getElementById('browser-iframe').src = 'about:blank';
             }, 300);
         }
     </script>
