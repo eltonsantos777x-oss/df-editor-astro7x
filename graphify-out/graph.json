@@ -1,14 +1,23 @@
 {
-  "generated_at": "2026-09-03T06:11:37.738937+00:00",
+  "generated_at": "2026-09-04T13:09:09.164533+00:00",
   "files": [
     {
       "path": "index.html",
-      "bytes": 22815
+      "bytes": 301
     },
     {
       "path": ".lovasiri/sync.json",
       "bytes": 80
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "bytes": 852
     }
   ],
-  "dependencies": []
+  "dependencies": [
+    {
+      "source": "src/integrations/supabase/client.ts",
+      "target": "@supabase/supabase-js"
+    }
+  ]
 }
